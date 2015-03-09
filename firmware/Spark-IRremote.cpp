@@ -18,7 +18,7 @@
  */
 
 #include "application.h"
-#include "Spark-Core-IRremote/Spark-Core-IRremote.h"
+#include "Spark-IRremote/Spark-IRremote.h"
 
 IRsend::IRsend(int irPin) : irPin(irPin) {};
 
