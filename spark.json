@@ -1,7 +1,7 @@
 {
-  "name": "IRremote",
+  "name": "Spark-Core-IRremote",
   "author": "Gaspard van Koningsveld",
   "license": "MIT",
   "version": "0.0.1",
-  "description": "Spark IR Remote."
+  "description": "Spark Core IR Remote."
 }

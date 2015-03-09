@@ -17,8 +17,8 @@
  * JVC and Panasonic protocol added by Kristian Lauszus (Thanks to zenwheel and other people at the original blog post)
  */
 
-#include "IRremote.h"
 #include "application.h"
+#include "Spark-Core-IRremote/Spark-Core-IRremote.h"
 
 IRsend::IRsend(int irPin) : irPin(irPin) {};
 
