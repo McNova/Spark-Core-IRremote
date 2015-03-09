@@ -17,8 +17,8 @@
  * JVC and Panasonic protocol added by Kristian Lauszus (Thanks to zenwheel and other people at the original blog post)
  */
 
+#include "IRremote.h"
 #include "application.h"
-#include "Spark-IRremote/Spark-IRremote.h"
 
 IRsend::IRsend(int irPin) : irPin(irPin) {};
 
@@ -60,7 +60,7 @@ void IRsend::sendSony(unsigned long data, int nbits) {
   }
 }
 
-void IRsend::sendRaw(unsigned int buf[], int len, int hz)
+int IRsend::sendRaw(unsigned int buf[], int len, int hz)
 {
   enableIROut(hz);
   for (int i = 0; i < len; i++) {
@@ -72,6 +72,7 @@ void IRsend::sendRaw(unsigned int buf[], int len, int hz)
     }
   }
   space(0); // Just to be sure
+  return len;
 }
 
 // Note: first bit must be a one (start bit)
@@ -229,33 +230,34 @@ void IRsend::sendPanasonic(unsigned int address, unsigned long data) {
     space(0);
 }
 
-void IRsend::sendJVC(unsigned long data, int nbits, int repeat)
+int IRsend::sendJVC(unsigned long data, int nbits, int repeat)
 {
     enableIROut(38);
+    int len = 0;
     data = data << (32 - nbits);
-    if (!repeat){
-        mark(JVC_HDR_MARK);
-        space(JVC_HDR_SPACE); 
+    if (!repeat) {
+        len += mark(JVC_HDR_MARK);
+        len += space(JVC_HDR_SPACE); 
     }
     for (int i = 0; i < nbits; i++) {
         if (data & TOPBIT) {
-            mark(JVC_BIT_MARK);
-            space(JVC_ONE_SPACE); 
+            len += mark(JVC_BIT_MARK);
+            len += space(JVC_ONE_SPACE); 
         } 
         else {
-            mark(JVC_BIT_MARK);
-            space(JVC_ZERO_SPACE); 
+            len += mark(JVC_BIT_MARK);
+            len += space(JVC_ZERO_SPACE); 
         }
         data <<= 1;
     }
-    mark(JVC_BIT_MARK);
+    len += mark(JVC_BIT_MARK);
     space(0);
+    return len;
 }
 
-void IRsend::mark(int time) {
+int IRsend::mark(int time) {
   // Sends an IR mark (frequency burst output) for the specified number of microseconds.
   noInterrupts();
-  
   while (time > 0) {
     digitalWrite(irPin, HIGH); // this takes about 3 microseconds to happen
     delayMicroseconds(burstWait);
@@ -264,16 +266,17 @@ void IRsend::mark(int time) {
  
     time -= burstLength;
   }
-  
   interrupts();
+  return time;
 }
 
-void IRsend::space(int time) {
+int IRsend::space(int time) {
   // Sends an IR space (no output) for the specified number of microseconds.
-  digitalWrite(irPin, LOW); // Takes about 3 microsecondes
-  if (time > 3) {
-    delayMicroseconds(time - 3);
-  }
+  //digitalWrite(irPin, LOW); // Takes about 3 microsecondes
+  //if (time > 3) {
+    delayMicroseconds(time);// - 3);
+  //}
+  return time;
 }
 
 void IRsend::enableIROut(int khz) {

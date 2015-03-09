@@ -28,17 +28,17 @@ public:
   // Neither Sanyo nor Mitsubishi send is implemented yet
   //  void sendSanyo(unsigned long data, int nbits);
   //  void sendMitsubishi(unsigned long data, int nbits);
-  void sendRaw(unsigned int buf[], int len, int hz);
+  int sendRaw(unsigned int buf[], int len, int hz);
   void sendRC5(unsigned long data, int nbits);
   void sendRC6(unsigned long data, int nbits);
   void sendSharp(unsigned long data, int nbits);
   void sendDISH(unsigned long data, int nbits);
   void sendPanasonic(unsigned int address, unsigned long data);
-  void sendJVC(unsigned long data, int nbits, int repeat); // *Note instead of sending the REPEAT constant if you want the JVC repeat signal sent, send the original code value and change the repeat argument from 0 to 1. JVC protocol repeats by skipping the header NOT by sending a separate code value like NEC does.
+  int sendJVC(unsigned long data, int nbits, int repeat); // *Note instead of sending the REPEAT constant if you want the JVC repeat signal sent, send the original code value and change the repeat argument from 0 to 1. JVC protocol repeats by skipping the header NOT by sending a separate code value like NEC does.
 private:
   void enableIROut(int khz);
-  void mark(int usec);
-  void space(int usec);
+  int mark(int usec);
+  int space(int usec);
 }
 ;
 
@@ -105,11 +105,11 @@ private:
 #define PANASONIC_ONE_SPACE 1244
 #define PANASONIC_ZERO_SPACE 400
 
-#define JVC_HDR_MARK 8000
-#define JVC_HDR_SPACE 4000
-#define JVC_BIT_MARK 600
-#define JVC_ONE_SPACE 1600
-#define JVC_ZERO_SPACE 550
+#define JVC_HDR_MARK 8550
+#define JVC_HDR_SPACE 4175
+#define JVC_BIT_MARK 525
+#define JVC_ONE_SPACE 1550
+#define JVC_ZERO_SPACE 525
 #define JVC_RPT_LENGTH 60000
 
 #define SHARP_BITS 15
@@ -118,3 +118,4 @@ private:
 #define TOPBIT 0x80000000
 
 #endif
+
